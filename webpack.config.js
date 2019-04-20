@@ -38,7 +38,7 @@ const config = {
     output: {
         path: buildPath,
         filename: 'js/[name].js',
-        publicPath: './'
+        publicPath: './cv'
     },
 
     module: {
