@@ -1,0 +1,68 @@
+.side-nav
+    position relative
+    z-index 10
+    display -webkit-box
+    display -webkit-flex
+    display -ms-flexbox
+    display flex
+    flex-direction column
+    justify-content space-around
+    margin 0
+    padding 0
+    max-height 750px
+    width 100px
+    height 70%
+    list-style-position inside
+
+    & li
+        position relative
+        top -5px
+        color #fff
+        font-size 6px
+        cursor pointer
+
+        &::before
+            position absolute
+            top 3px
+            left 10px
+            color #555
+            font-weight 300
+            font-size 14px
+
+        & span
+            position relative
+            top 3px
+            left 10px
+            visibility hidden
+            color #fff
+            font-weight 300
+            font-size 14px
+            opacity 0
+
+        &:nth-child(1)::before
+            content '01'
+
+        &:nth-child(2)::before
+            content '02'
+
+        &:nth-child(3)::before
+            content '03'
+
+        &:nth-child(4)::before
+            content '04'
+
+        &:nth-child(5)::before
+            content '05'
+
+        &.is-active
+            color #282828
+            transition color 0.4s ease-in-out
+
+            &::before
+                left -33px
+                color #fff
+
+            & span
+                visibility visible
+                opacity 1
+                transition opacity 0.4s ease-in-out

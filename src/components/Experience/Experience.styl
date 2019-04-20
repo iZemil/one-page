@@ -1,0 +1,94 @@
+.experience
+    position relative
+    display flex
+    flex-direction column
+    justify-content center
+    margin 0 auto
+    max-width 80%
+    height 100%
+
+    @media (max-width: 767px)
+        max-width none
+
+    &__content
+        margin auto
+        max-width 720px
+
+        @media (max-width: 767px)
+            max-width 520px
+
+        @media (max-width: 600px)
+            max-width 480px
+
+        @media (max-width: 525px)
+            max-width 300px
+
+    &__slider
+        .slick-dots
+            bottom -66px
+
+            .slick-active
+                button::before
+                    color #ffffff
+                    opacity 1
+
+            button::before
+                font-size 8px
+
+        &-arrow
+            position absolute
+            top 50%
+            z-index 99
+            display flex
+            justify-content center
+            align-items center
+            width 50px
+            height 50px
+            outline none
+            border 2px solid #ffffff
+            border-radius 50%
+            background-color transparent
+            cursor pointer
+
+            @media (max-width: 600px)
+                display none
+
+            &_prev
+                left 0
+                transform rotate(180deg)
+
+            &_next
+                right 0
+
+            svg
+                width 20px
+                fill #ffffff
+
+        &-item
+            outline none
+            text-align center
+
+            h3
+                font-size 24px
+
+                @media (max-width: 525px)
+                    font-size 18px
+
+            &-list
+                padding 0 33px
+                list-style none
+
+                @media (max-width: 600px)
+                    padding 0
+
+                li
+                    margin-bottom 12px
+                    font-size 16px
+
+                    @media (max-width: 525px)
+                        margin-bottom 8px
+                        font-size 14px
+
+                    span
+                        &::before
+                            content '• '

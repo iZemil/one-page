@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "checkJs": false,
+        "baseUrl": "./src/",
+        "experimentalDecorators": true
+    },
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*",
+        "docker",
+        "build",
+        "webpack"
+    ],
+    "include": [
+        "src/**/*"
+    ]
+}
