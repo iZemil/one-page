@@ -79,7 +79,7 @@ module.exports = (env, argv) => {
 
     if (mode === 'production') {
         config.optimization = optimization;
-        config.output.publicPath = './cv';
+        // config.output.publicPath = './cv';
 
         return merge([
             config,
