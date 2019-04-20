@@ -1,5 +1,6 @@
 {
     "name": "zemil",
+    "homepage": "https://izemil.github.io/cv/",
     "version": "1.0.0",
     "main": "src/index.jsx",
     "scripts": {
