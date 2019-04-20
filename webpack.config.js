@@ -37,8 +37,7 @@ const config = {
 
     output: {
         path: buildPath,
-        filename: 'js/[name].js',
-        publicPath: './cv'
+        filename: 'js/[name].js'
     },
 
     module: {
@@ -80,6 +79,7 @@ module.exports = (env, argv) => {
 
     if (mode === 'production') {
         config.optimization = optimization;
+        config.output.publicPath = './cv';
 
         return merge([
             config,
