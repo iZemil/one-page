@@ -65,6 +65,11 @@ const CONTACTS = [
         text: 'xxxzei@mail.ru'
     },
     {
+        title: 'linkedin',
+        href: 'https://www.linkedin.com/in/emil-zaripov-8028b4170/',
+        text: 'profile'
+    },
+    {
         title: 'telegram',
         href: 'https://telegram.me/xxxzei',
         text: 'xxxzei'
