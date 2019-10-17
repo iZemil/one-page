@@ -1,0 +1,22 @@
+{
+  "name": "g4m4",
+  "version": "1.0.0",
+  "main": "express.js",
+  "scripts": {
+    "start": "pm2 start ./server.js --name express-g4m4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/iZemil/g4m4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/iZemil/g4m4/issues"
+  },
+  "homepage": "https://gitlab.com/iZemil/g4m4#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
