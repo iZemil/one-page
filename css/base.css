@@ -183,7 +183,7 @@ body {
     --color-subtitle: #fff;
     color: var(--color-text);
     background-color: var(--color-bg);
-    font-family: Barlow, Arial, sans-serif;
+    font-family: 'Varela Round', Arial, sans-serif;
     overflow: hidden;
     height: 100vh;
 }
