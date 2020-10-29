@@ -1,23 +1,3 @@
-const POINTS = [
-    {
-        title: 'About me',
-        list: [
-            'Fullstack javascript dev',
-            `Experience more than ${new Date().getFullYear() - 2016 + 1} years`,
-            'Prefer React/Mobx on Frontend',
-            'Prefer Express/Mongoose on Backend'
-        ]
-    },
-    {
-        title: 'My goals',
-        list: ['Advanced speaking english', 'Machine learning', 'Own projects']
-    },
-    {
-        title: 'Work wishes',
-        list: ['Teamwork', 'Skills expending', 'Complex projects', 'Remote']
-    }
-];
-
 const EXPERIENCE = [
     {
         title: 'Freelance since 2015',
@@ -78,11 +58,6 @@ const CONTACTS = [
         title: 'skype',
         href: 'skype:xxxzei?add',
         text: 'xxxzei'
-    },
-    {
-        title: 'location',
-        href: 'https://www.google.com/search?q=Челябинск&amp;oq=Челябинск',
-        text: 'Chelyabinsk'
     }
 ];
 
@@ -97,4 +72,4 @@ const SKILLS = [
     'Git (Source tree, SmartGit, simple bash)'
 ];
 
-export { POINTS, EXPERIENCE, CONTACTS, SKILLS };
+export { EXPERIENCE, CONTACTS, SKILLS };

@@ -32,6 +32,18 @@ const Menu = ({ className }) => (
 );
 
 function IndexPage() {
+    const wallpaper = (
+        <main>
+            <div className="content">
+                <canvas className="landscape" />
+
+                {/* <h2 className="content__title">G4M4</h2> */}
+                <p className="content__subtitle" />
+            </div>
+
+            <div className="overlay" />
+        </main>
+    );
     return (
         <div className="perspective effect-rotate-left">
             <div id="large-header" className="container">
@@ -57,6 +69,8 @@ function IndexPage() {
                                 </li>
                             ))}
                         </ul>
+
+                        {wallpaper}
                     </div>
                 </div>
             </div>

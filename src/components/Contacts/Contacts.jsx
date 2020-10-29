@@ -8,7 +8,7 @@ export default function Contacts() {
             <div className="contacts__content">
                 {CONTACTS.map(({ title, href, text }) => (
                     <p key={title}>
-                        → {title}:&nbsp;<a
+                        {title}:&nbsp;<a
                             href={href}
                             target="_blank"
                             rel="noopener noreferrer"

@@ -1,5 +1,5 @@
 import React from 'react';
-import img from 'assets/images/side.png';
+
 import './MyCode.styl';
 
 export default function Experience() {
@@ -19,8 +19,6 @@ export default function Experience() {
                         github
                     </a>
                 </p>
-
-                <img src={img} alt="zemil github" />
             </div>
         </div>
     );

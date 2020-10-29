@@ -1,19 +1,18 @@
 import React from 'react';
-import { POINTS } from 'utils/constants';
+
 import './Intro.styl';
-import frontImg from 'assets/images/front.png';
 
 export default function Intro() {
     return (
         <div className="intro">
             <div className="intro--banner">
                 <h1>
-                    <small>Frontend developer</small>
-                    <br />Zaripov Emil
+                    <small>About web studio</small>
+                    <br />Focus on your Goals
                 </h1>
 
                 <button type="button" className="cta">
-                    Contact me
+                    Contact us
                     <svg
                         id="Layer_1"
                         version="1.1"
@@ -30,17 +29,6 @@ export default function Intro() {
                     </svg>
                     <span className="btn-background" />
                 </button>
-
-                <img src={frontImg} alt="Web developer Zaripov Emil" />
-            </div>
-
-            <div className="intro--options">
-                {POINTS.map(({ title, list }) => (
-                    <div key={title}>
-                        <h3>{title}</h3>
-                        <ul>{list.map(it => <li key={it}>{it}</li>)}</ul>
-                    </div>
-                ))}
             </div>
         </div>
     );

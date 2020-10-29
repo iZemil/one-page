@@ -4,16 +4,14 @@
  * Copyright (c) 2016 Jorik Tangelder;
  * Licensed under the MIT license */
 (function s(window, document, exportName, undefined) {
-    'use strict';
+    const VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
+    const TEST_ELEMENT = document.createElement('div');
 
-    var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
-    var TEST_ELEMENT = document.createElement('div');
+    const TYPE_FUNCTION = 'function';
 
-    var TYPE_FUNCTION = 'function';
-
-    var round = Math.round;
-    var abs = Math.abs;
-    var now = Date.now;
+    const round = Math.round;
+    const abs = Math.abs;
+    const now = Date.now;
 
     /**
      * set a timeout with a given scope
@@ -50,7 +48,7 @@
      * @param {Object} context
      */
     function each(obj, iterator, context) {
-        var i;
+        let i;
 
         if (!obj) {
             return;
@@ -79,11 +77,10 @@
      * @returns {Function} A new function wrapping the supplied method.
      */
     function deprecate(method, name, message) {
-        var deprecationMessage =
-            'DEPRECATED METHOD: ' + name + '\n' + message + ' AT \n';
+        const deprecationMessage = `DEPRECATED METHOD: ${name}\n${message} AT \n`;
         return function() {
-            var e = new Error('get-stack-trace');
-            var stack =
+            const e = new Error('get-stack-trace');
+            const stack =
                 e && e.stack
                     ? e.stack
                           .replace(/^[^\(]+?[\n$]/gm, '')
@@ -94,7 +91,7 @@
                           )
                     : 'Unknown Stack Trace';
 
-            var log =
+            const log =
                 window.console && (window.console.warn || window.console.log);
             if (log) {
                 log.call(window.console, deprecationMessage, stack);
@@ -110,7 +107,7 @@
      * @param {...Object} objects_to_assign
      * @returns {Object} target
      */
-    var assign;
+    let assign;
     if (typeof Object.assign !== 'function') {
         assign = function assign(target) {
             if (target === undefined || target === null) {
@@ -119,11 +116,11 @@
                 );
             }
 
-            var output = Object(target);
-            for (var index = 1; index < arguments.length; index++) {
-                var source = arguments[index];
+            const output = Object(target);
+            for (let index = 1; index < arguments.length; index++) {
+                const source = arguments[index];
                 if (source !== undefined && source !== null) {
-                    for (var nextKey in source) {
+                    for (const nextKey in source) {
                         if (source.hasOwnProperty(nextKey)) {
                             output[nextKey] = source[nextKey];
                         }
@@ -144,10 +141,10 @@
      * @param {Boolean} [merge=false]
      * @returns {Object} dest
      */
-    var extend = deprecate(
-        function extend(dest, src, merge) {
-            var keys = Object.keys(src);
-            var i = 0;
+    const extend = deprecate(
+        (dest, src, merge) => {
+            const keys = Object.keys(src);
+            let i = 0;
             while (i < keys.length) {
                 if (!merge || (merge && dest[keys[i]] === undefined)) {
                     dest[keys[i]] = src[keys[i]];
@@ -167,10 +164,8 @@
      * @param {Object} src
      * @returns {Object} dest
      */
-    var merge = deprecate(
-        function merge(dest, src) {
-            return extend(dest, src, true);
-        },
+    const merge = deprecate(
+        (dest, src) => extend(dest, src, true),
         'merge',
         'Use `assign`.'
     );
@@ -182,8 +177,8 @@
      * @param {Object} [properties]
      */
     function inherit(child, base, properties) {
-        var baseP = base.prototype,
-            childP;
+        const baseP = base.prototype;
+        let childP;
 
         childP = child.prototype = Object.create(baseP);
         childP.constructor = child;
@@ -214,7 +209,7 @@
      * @returns {Boolean}
      */
     function boolOrFn(val, args) {
-        if (typeof val == TYPE_FUNCTION) {
+        if (typeof val === TYPE_FUNCTION) {
             return val.apply(args ? args[0] || undefined : undefined, args);
         }
         return val;
@@ -237,7 +232,7 @@
      * @param {Function} handler
      */
     function addEventListeners(target, types, handler) {
-        each(splitStr(types), function(type) {
+        each(splitStr(types), type => {
             target.addEventListener(type, handler, false);
         });
     }
@@ -249,7 +244,7 @@
      * @param {Function} handler
      */
     function removeEventListeners(target, types, handler) {
-        each(splitStr(types), function(type) {
+        each(splitStr(types), type => {
             target.removeEventListener(type, handler, false);
         });
     }
@@ -300,19 +295,18 @@
     function inArray(src, find, findByKey) {
         if (src.indexOf && !findByKey) {
             return src.indexOf(find);
-        } else {
-            var i = 0;
-            while (i < src.length) {
-                if (
-                    (findByKey && src[i][findByKey] == find) ||
-                    (!findByKey && src[i] === find)
-                ) {
-                    return i;
-                }
-                i++;
-            }
-            return -1;
         }
+        let i = 0;
+        while (i < src.length) {
+            if (
+                (findByKey && src[i][findByKey] == find) ||
+                (!findByKey && src[i] === find)
+            ) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     /**
@@ -332,12 +326,12 @@
      * @returns {Array} [{id:1},{id:2}]
      */
     function uniqueArray(src, key, sort) {
-        var results = [];
-        var values = [];
-        var i = 0;
+        let results = [];
+        const values = [];
+        let i = 0;
 
         while (i < src.length) {
-            var val = key ? src[i][key] : src[i];
+            const val = key ? src[i][key] : src[i];
             if (inArray(values, val) < 0) {
                 results.push(src[i]);
             }
@@ -349,9 +343,7 @@
             if (!key) {
                 results = results.sort();
             } else {
-                results = results.sort(function sortUniqueArray(a, b) {
-                    return a[key] > b[key];
-                });
+                results = results.sort((a, b) => a[key] > b[key]);
             }
         }
 
@@ -365,10 +357,11 @@
      * @returns {String|Undefined} prefixed
      */
     function prefixed(obj, property) {
-        var prefix, prop;
-        var camelProp = property[0].toUpperCase() + property.slice(1);
+        let prefix;
+        let prop;
+        const camelProp = property[0].toUpperCase() + property.slice(1);
 
-        var i = 0;
+        let i = 0;
         while (i < VENDOR_PREFIXES.length) {
             prefix = VENDOR_PREFIXES[i];
             prop = prefix ? prefix + camelProp : property;
@@ -385,7 +378,7 @@
      * get a unique id
      * @returns {number} uniqueId
      */
-    var _uniqueId = 1;
+    let _uniqueId = 1;
     function uniqueId() {
         return _uniqueId++;
     }
@@ -396,41 +389,42 @@
      * @returns {DocumentView|Window}
      */
     function getWindowForElement(element) {
-        var doc = element.ownerDocument || element;
+        const doc = element.ownerDocument || element;
         return doc.defaultView || doc.parentWindow || window;
     }
 
-    var MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
+    const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
-    var SUPPORT_TOUCH = 'ontouchstart' in window;
-    var SUPPORT_POINTER_EVENTS = prefixed(window, 'PointerEvent') !== undefined;
-    var SUPPORT_ONLY_TOUCH =
+    const SUPPORT_TOUCH = 'ontouchstart' in window;
+    const SUPPORT_POINTER_EVENTS =
+        prefixed(window, 'PointerEvent') !== undefined;
+    const SUPPORT_ONLY_TOUCH =
         SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent);
 
-    var INPUT_TYPE_TOUCH = 'touch';
-    var INPUT_TYPE_PEN = 'pen';
-    var INPUT_TYPE_MOUSE = 'mouse';
-    var INPUT_TYPE_KINECT = 'kinect';
+    const INPUT_TYPE_TOUCH = 'touch';
+    const INPUT_TYPE_PEN = 'pen';
+    const INPUT_TYPE_MOUSE = 'mouse';
+    const INPUT_TYPE_KINECT = 'kinect';
 
-    var COMPUTE_INTERVAL = 25;
+    const COMPUTE_INTERVAL = 25;
 
-    var INPUT_START = 1;
-    var INPUT_MOVE = 2;
-    var INPUT_END = 4;
-    var INPUT_CANCEL = 8;
+    const INPUT_START = 1;
+    const INPUT_MOVE = 2;
+    const INPUT_END = 4;
+    const INPUT_CANCEL = 8;
 
-    var DIRECTION_NONE = 1;
-    var DIRECTION_LEFT = 2;
-    var DIRECTION_RIGHT = 4;
-    var DIRECTION_UP = 8;
-    var DIRECTION_DOWN = 16;
+    const DIRECTION_NONE = 1;
+    const DIRECTION_LEFT = 2;
+    const DIRECTION_RIGHT = 4;
+    const DIRECTION_UP = 8;
+    const DIRECTION_DOWN = 16;
 
-    var DIRECTION_HORIZONTAL = DIRECTION_LEFT | DIRECTION_RIGHT;
-    var DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
-    var DIRECTION_ALL = DIRECTION_HORIZONTAL | DIRECTION_VERTICAL;
+    const DIRECTION_HORIZONTAL = DIRECTION_LEFT | DIRECTION_RIGHT;
+    const DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
+    const DIRECTION_ALL = DIRECTION_HORIZONTAL | DIRECTION_VERTICAL;
 
-    var PROPS_XY = ['x', 'y'];
-    var PROPS_CLIENT_XY = ['clientX', 'clientY'];
+    const PROPS_XY = ['x', 'y'];
+    const PROPS_CLIENT_XY = ['clientX', 'clientY'];
 
     /**
      * create new input type manager
@@ -440,7 +434,7 @@
      * @constructor
      */
     function Input(manager, callback) {
-        var self = this;
+        const self = this;
         this.manager = manager;
         this.callback = callback;
         this.element = manager.element;
@@ -462,12 +456,12 @@
          * should handle the inputEvent data and trigger the callback
          * @virtual
          */
-        handler: function() {},
+        handler() {},
 
         /**
          * bind the events
          */
-        init: function() {
+        init() {
             this.evEl &&
                 addEventListeners(this.element, this.evEl, this.domHandler);
             this.evTarget &&
@@ -483,7 +477,7 @@
         /**
          * unbind the events
          */
-        destroy: function() {
+        destroy() {
             this.evEl &&
                 removeEventListeners(this.element, this.evEl, this.domHandler);
             this.evTarget &&
@@ -508,8 +502,8 @@
      * @returns {Input}
      */
     function createInputInstance(manager) {
-        var Type;
-        var inputClass = manager.options.inputClass;
+        let Type;
+        const inputClass = manager.options.inputClass;
 
         if (inputClass) {
             Type = inputClass;
@@ -532,11 +526,11 @@
      * @param {Object} input
      */
     function inputHandler(manager, eventType, input) {
-        var pointersLen = input.pointers.length;
-        var changedPointersLen = input.changedPointers.length;
-        var isFirst =
+        const pointersLen = input.pointers.length;
+        const changedPointersLen = input.changedPointers.length;
+        const isFirst =
             eventType & INPUT_START && pointersLen - changedPointersLen === 0;
-        var isFinal =
+        const isFinal =
             eventType & (INPUT_END | INPUT_CANCEL) &&
             pointersLen - changedPointersLen === 0;
 
@@ -567,9 +561,9 @@
      * @param {Object} input
      */
     function computeInputData(manager, input) {
-        var session = manager.session;
-        var pointers = input.pointers;
-        var pointersLength = pointers.length;
+        const session = manager.session;
+        const pointers = input.pointers;
+        const pointersLength = pointers.length;
 
         // store the first input to calculate the distance and direction
         if (!session.firstInput) {
@@ -583,13 +577,13 @@
             session.firstMultiple = false;
         }
 
-        var firstInput = session.firstInput;
-        var firstMultiple = session.firstMultiple;
-        var offsetCenter = firstMultiple
+        const firstInput = session.firstInput;
+        const firstMultiple = session.firstMultiple;
+        const offsetCenter = firstMultiple
             ? firstMultiple.center
             : firstInput.center;
 
-        var center = (input.center = getCenter(pointers));
+        const center = (input.center = getCenter(pointers));
         input.timeStamp = now();
         input.deltaTime = input.timeStamp - firstInput.timeStamp;
 
@@ -599,7 +593,7 @@
         computeDeltaXY(session, input);
         input.offsetDirection = getDirection(input.deltaX, input.deltaY);
 
-        var overallVelocity = getVelocity(
+        const overallVelocity = getVelocity(
             input.deltaTime,
             input.deltaX,
             input.deltaY
@@ -627,7 +621,7 @@
         computeIntervalInputData(session, input);
 
         // find the correct target
-        var target = manager.element;
+        let target = manager.element;
         if (hasParent(input.srcEvent.target, target)) {
             target = input.srcEvent.target;
         }
@@ -635,10 +629,10 @@
     }
 
     function computeDeltaXY(session, input) {
-        var center = input.center;
-        var offset = session.offsetDelta || {};
-        var prevDelta = session.prevDelta || {};
-        var prevInput = session.prevInput || {};
+        const center = input.center;
+        let offset = session.offsetDelta || {};
+        let prevDelta = session.prevDelta || {};
+        const prevInput = session.prevInput || {};
 
         if (
             input.eventType === INPUT_START ||
@@ -665,21 +659,23 @@
      * @param {Object} input
      */
     function computeIntervalInputData(session, input) {
-        var last = session.lastInterval || input,
-            deltaTime = input.timeStamp - last.timeStamp,
-            velocity,
-            velocityX,
-            velocityY,
-            direction;
+        const last = session.lastInterval || input;
+        const deltaTime = input.timeStamp - last.timeStamp;
+        let velocity;
+
+        let velocityX;
+
+        let velocityY;
+        let direction;
 
         if (
             input.eventType != INPUT_CANCEL &&
             (deltaTime > COMPUTE_INTERVAL || last.velocity === undefined)
         ) {
-            var deltaX = input.deltaX - last.deltaX;
-            var deltaY = input.deltaY - last.deltaY;
+            const deltaX = input.deltaX - last.deltaX;
+            const deltaY = input.deltaY - last.deltaY;
 
-            var v = getVelocity(deltaTime, deltaX, deltaY);
+            const v = getVelocity(deltaTime, deltaX, deltaY);
             velocityX = v.x;
             velocityY = v.y;
             velocity = abs(v.x) > abs(v.y) ? v.x : v.y;
@@ -708,8 +704,8 @@
     function simpleCloneInputData(input) {
         // make a simple copy of the pointers because we will get a reference if we don't
         // we only need clientXY for the calculations
-        var pointers = [];
-        var i = 0;
+        const pointers = [];
+        let i = 0;
         while (i < input.pointers.length) {
             pointers[i] = {
                 clientX: round(input.pointers[i].clientX),
@@ -720,7 +716,7 @@
 
         return {
             timeStamp: now(),
-            pointers: pointers,
+            pointers,
             center: getCenter(pointers),
             deltaX: input.deltaX,
             deltaY: input.deltaY
@@ -733,7 +729,7 @@
      * @return {Object} center contains `x` and `y` properties
      */
     function getCenter(pointers) {
-        var pointersLength = pointers.length;
+        const pointersLength = pointers.length;
 
         // no need to loop when only one touch
         if (pointersLength === 1) {
@@ -743,9 +739,9 @@
             };
         }
 
-        var x = 0,
-            y = 0,
-            i = 0;
+        let x = 0;
+        let y = 0;
+        let i = 0;
         while (i < pointersLength) {
             x += pointers[i].clientX;
             y += pointers[i].clientY;
@@ -800,8 +796,8 @@
         if (!props) {
             props = PROPS_XY;
         }
-        var x = p2[props[0]] - p1[props[0]],
-            y = p2[props[1]] - p1[props[1]];
+        const x = p2[props[0]] - p1[props[0]];
+        const y = p2[props[1]] - p1[props[1]];
 
         return Math.sqrt(x * x + y * y);
     }
@@ -817,8 +813,8 @@
         if (!props) {
             props = PROPS_XY;
         }
-        var x = p2[props[0]] - p1[props[0]],
-            y = p2[props[1]] - p1[props[1]];
+        const x = p2[props[0]] - p1[props[0]];
+        const y = p2[props[1]] - p1[props[1]];
         return (Math.atan2(y, x) * 180) / Math.PI;
     }
 
@@ -849,14 +845,14 @@
         );
     }
 
-    var MOUSE_INPUT_MAP = {
+    const MOUSE_INPUT_MAP = {
         mousedown: INPUT_START,
         mousemove: INPUT_MOVE,
         mouseup: INPUT_END
     };
 
-    var MOUSE_ELEMENT_EVENTS = 'mousedown';
-    var MOUSE_WINDOW_EVENTS = 'mousemove mouseup';
+    const MOUSE_ELEMENT_EVENTS = 'mousedown';
+    const MOUSE_WINDOW_EVENTS = 'mousemove mouseup';
 
     /**
      * Mouse events input
@@ -878,7 +874,7 @@
          * @param {Object} ev
          */
         handler: function MEhandler(ev) {
-            var eventType = MOUSE_INPUT_MAP[ev.type];
+            let eventType = MOUSE_INPUT_MAP[ev.type];
 
             // on start we want to have the left mouse button down
             if (eventType & INPUT_START && ev.button === 0) {
@@ -907,7 +903,7 @@
         }
     });
 
-    var POINTER_INPUT_MAP = {
+    const POINTER_INPUT_MAP = {
         pointerdown: INPUT_START,
         pointermove: INPUT_MOVE,
         pointerup: INPUT_END,
@@ -916,15 +912,15 @@
     };
 
     // in IE10 the pointer types is defined as an enum
-    var IE10_POINTER_TYPE_ENUM = {
+    const IE10_POINTER_TYPE_ENUM = {
         2: INPUT_TYPE_TOUCH,
         3: INPUT_TYPE_PEN,
         4: INPUT_TYPE_MOUSE,
         5: INPUT_TYPE_KINECT // see https://twitter.com/jacobrossi/status/480596438489890816
     };
 
-    var POINTER_ELEMENT_EVENTS = 'pointerdown';
-    var POINTER_WINDOW_EVENTS = 'pointermove pointerup pointercancel';
+    let POINTER_ELEMENT_EVENTS = 'pointerdown';
+    let POINTER_WINDOW_EVENTS = 'pointermove pointerup pointercancel';
 
     // IE10 has prefixed support, and case-sensitive
     if (window.MSPointerEvent && !window.PointerEvent) {
@@ -952,18 +948,18 @@
          * @param {Object} ev
          */
         handler: function PEhandler(ev) {
-            var store = this.store;
-            var removePointer = false;
+            const store = this.store;
+            let removePointer = false;
 
-            var eventTypeNormalized = ev.type.toLowerCase().replace('ms', '');
-            var eventType = POINTER_INPUT_MAP[eventTypeNormalized];
-            var pointerType =
+            const eventTypeNormalized = ev.type.toLowerCase().replace('ms', '');
+            const eventType = POINTER_INPUT_MAP[eventTypeNormalized];
+            const pointerType =
                 IE10_POINTER_TYPE_ENUM[ev.pointerType] || ev.pointerType;
 
-            var isTouch = pointerType == INPUT_TYPE_TOUCH;
+            const isTouch = pointerType == INPUT_TYPE_TOUCH;
 
             // get index of the event in the store
-            var storeIndex = inArray(store, ev.pointerId, 'pointerId');
+            let storeIndex = inArray(store, ev.pointerId, 'pointerId');
 
             // start and mouse must be down
             if (eventType & INPUT_START && (ev.button === 0 || isTouch)) {
@@ -986,7 +982,7 @@
             this.callback(this.manager, eventType, {
                 pointers: store,
                 changedPointers: [ev],
-                pointerType: pointerType,
+                pointerType,
                 srcEvent: ev
             });
 
@@ -997,15 +993,15 @@
         }
     });
 
-    var SINGLE_TOUCH_INPUT_MAP = {
+    const SINGLE_TOUCH_INPUT_MAP = {
         touchstart: INPUT_START,
         touchmove: INPUT_MOVE,
         touchend: INPUT_END,
         touchcancel: INPUT_CANCEL
     };
 
-    var SINGLE_TOUCH_TARGET_EVENTS = 'touchstart';
-    var SINGLE_TOUCH_WINDOW_EVENTS =
+    const SINGLE_TOUCH_TARGET_EVENTS = 'touchstart';
+    const SINGLE_TOUCH_WINDOW_EVENTS =
         'touchstart touchmove touchend touchcancel';
 
     /**
@@ -1023,7 +1019,7 @@
 
     inherit(SingleTouchInput, Input, {
         handler: function TEhandler(ev) {
-            var type = SINGLE_TOUCH_INPUT_MAP[ev.type];
+            const type = SINGLE_TOUCH_INPUT_MAP[ev.type];
 
             // should we handle the touch events?
             if (type === INPUT_START) {
@@ -1034,7 +1030,7 @@
                 return;
             }
 
-            var touches = normalizeSingleTouches.call(this, ev, type);
+            const touches = normalizeSingleTouches.call(this, ev, type);
 
             // when done, reset the started state
             if (
@@ -1060,8 +1056,8 @@
      * @returns {undefined|Array} [all, changed]
      */
     function normalizeSingleTouches(ev, type) {
-        var all = toArray(ev.touches);
-        var changed = toArray(ev.changedTouches);
+        let all = toArray(ev.touches);
+        const changed = toArray(ev.changedTouches);
 
         if (type & (INPUT_END | INPUT_CANCEL)) {
             all = uniqueArray(all.concat(changed), 'identifier', true);
@@ -1070,14 +1066,14 @@
         return [all, changed];
     }
 
-    var TOUCH_INPUT_MAP = {
+    const TOUCH_INPUT_MAP = {
         touchstart: INPUT_START,
         touchmove: INPUT_MOVE,
         touchend: INPUT_END,
         touchcancel: INPUT_CANCEL
     };
 
-    var TOUCH_TARGET_EVENTS = 'touchstart touchmove touchend touchcancel';
+    const TOUCH_TARGET_EVENTS = 'touchstart touchmove touchend touchcancel';
 
     /**
      * Multi-user touch events input
@@ -1093,8 +1089,8 @@
 
     inherit(TouchInput, Input, {
         handler: function MTEhandler(ev) {
-            var type = TOUCH_INPUT_MAP[ev.type];
-            var touches = getTouches.call(this, ev, type);
+            const type = TOUCH_INPUT_MAP[ev.type];
+            const touches = getTouches.call(this, ev, type);
             if (!touches) {
                 return;
             }
@@ -1115,8 +1111,8 @@
      * @returns {undefined|Array} [all, changed]
      */
     function getTouches(ev, type) {
-        var allTouches = toArray(ev.touches);
-        var targetIds = this.targetIds;
+        const allTouches = toArray(ev.touches);
+        const targetIds = this.targetIds;
 
         // when there is only one touch, the process can be simplified
         if (type & (INPUT_START | INPUT_MOVE) && allTouches.length === 1) {
@@ -1124,16 +1120,18 @@
             return [allTouches, allTouches];
         }
 
-        var i,
-            targetTouches,
-            changedTouches = toArray(ev.changedTouches),
-            changedTargetTouches = [],
-            target = this.target;
+        let i;
+        let targetTouches;
+
+        const changedTouches = toArray(ev.changedTouches);
+        const changedTargetTouches = [];
+
+        const target = this.target;
 
         // get target touches from touches
-        targetTouches = allTouches.filter(function(touch) {
-            return hasParent(touch.target, target);
-        });
+        targetTouches = allTouches.filter(touch =>
+            hasParent(touch.target, target)
+        );
 
         // collect touches
         if (type === INPUT_START) {
@@ -1183,13 +1181,13 @@
      * @extends Input
      */
 
-    var DEDUP_TIMEOUT = 2500;
-    var DEDUP_DISTANCE = 25;
+    const DEDUP_TIMEOUT = 2500;
+    const DEDUP_DISTANCE = 25;
 
     function TouchMouseInput() {
         Input.apply(this, arguments);
 
-        var handler = bindFn(this.handler, this);
+        const handler = bindFn(this.handler, this);
         this.touch = new TouchInput(this.manager, handler);
         this.mouse = new MouseInput(this.manager, handler);
 
@@ -1205,8 +1203,8 @@
          * @param {Object} inputData
          */
         handler: function TMEhandler(manager, inputEvent, inputData) {
-            var isTouch = inputData.pointerType == INPUT_TYPE_TOUCH,
-                isMouse = inputData.pointerType == INPUT_TYPE_MOUSE;
+            const isTouch = inputData.pointerType == INPUT_TYPE_TOUCH;
+            const isMouse = inputData.pointerType == INPUT_TYPE_MOUSE;
 
             if (
                 isMouse &&
@@ -1245,14 +1243,14 @@
     }
 
     function setLastTouch(eventData) {
-        var touch = eventData.changedPointers[0];
+        const touch = eventData.changedPointers[0];
 
         if (touch.identifier === this.primaryTouch) {
-            var lastTouch = { x: touch.clientX, y: touch.clientY };
+            const lastTouch = { x: touch.clientX, y: touch.clientY };
             this.lastTouches.push(lastTouch);
-            var lts = this.lastTouches;
-            var removeLastTouch = function() {
-                var i = lts.indexOf(lastTouch);
+            const lts = this.lastTouches;
+            const removeLastTouch = function() {
+                const i = lts.indexOf(lastTouch);
                 if (i > -1) {
                     lts.splice(i, 1);
                 }
@@ -1262,12 +1260,13 @@
     }
 
     function isSyntheticEvent(eventData) {
-        var x = eventData.srcEvent.clientX,
-            y = eventData.srcEvent.clientY;
-        for (var i = 0; i < this.lastTouches.length; i++) {
-            var t = this.lastTouches[i];
-            var dx = Math.abs(x - t.x),
-                dy = Math.abs(y - t.y);
+        const x = eventData.srcEvent.clientX;
+
+        const y = eventData.srcEvent.clientY;
+        for (let i = 0; i < this.lastTouches.length; i++) {
+            const t = this.lastTouches[i];
+            const dx = Math.abs(x - t.x);
+            const dy = Math.abs(y - t.y);
             if (dx <= DEDUP_DISTANCE && dy <= DEDUP_DISTANCE) {
                 return true;
             }
@@ -1275,17 +1274,17 @@
         return false;
     }
 
-    var PREFIXED_TOUCH_ACTION = prefixed(TEST_ELEMENT.style, 'touchAction');
-    var NATIVE_TOUCH_ACTION = PREFIXED_TOUCH_ACTION !== undefined;
+    const PREFIXED_TOUCH_ACTION = prefixed(TEST_ELEMENT.style, 'touchAction');
+    const NATIVE_TOUCH_ACTION = PREFIXED_TOUCH_ACTION !== undefined;
 
     // magical touchAction value
-    var TOUCH_ACTION_COMPUTE = 'compute';
-    var TOUCH_ACTION_AUTO = 'auto';
-    var TOUCH_ACTION_MANIPULATION = 'manipulation'; // not implemented
-    var TOUCH_ACTION_NONE = 'none';
-    var TOUCH_ACTION_PAN_X = 'pan-x';
-    var TOUCH_ACTION_PAN_Y = 'pan-y';
-    var TOUCH_ACTION_MAP = getTouchActionProps();
+    const TOUCH_ACTION_COMPUTE = 'compute';
+    const TOUCH_ACTION_AUTO = 'auto';
+    const TOUCH_ACTION_MANIPULATION = 'manipulation'; // not implemented
+    const TOUCH_ACTION_NONE = 'none';
+    const TOUCH_ACTION_PAN_X = 'pan-x';
+    const TOUCH_ACTION_PAN_Y = 'pan-y';
+    const TOUCH_ACTION_MAP = getTouchActionProps();
 
     /**
      * Touch Action
@@ -1304,7 +1303,7 @@
          * set the touchAction value on the element or enable the polyfill
          * @param {String} value
          */
-        set: function(value) {
+        set(value) {
             // find out the touch-action by the event handlers
             if (value == TOUCH_ACTION_COMPUTE) {
                 value = this.compute();
@@ -1323,7 +1322,7 @@
         /**
          * just re-set the touchAction value
          */
-        update: function() {
+        update() {
             this.set(this.manager.options.touchAction);
         },
 
@@ -1331,9 +1330,9 @@
          * compute the value for the touchAction property based on the recognizer's settings
          * @returns {String} value
          */
-        compute: function() {
-            var actions = [];
-            each(this.manager.recognizers, function(recognizer) {
+        compute() {
+            let actions = [];
+            each(this.manager.recognizers, recognizer => {
                 if (boolOrFn(recognizer.options.enable, [recognizer])) {
                     actions = actions.concat(recognizer.getTouchAction());
                 }
@@ -1345,9 +1344,9 @@
          * this method is called on each input cycle and provides the preventing of the browser behavior
          * @param {Object} input
          */
-        preventDefaults: function(input) {
-            var srcEvent = input.srcEvent;
-            var direction = input.offsetDirection;
+        preventDefaults(input) {
+            const srcEvent = input.srcEvent;
+            const direction = input.offsetDirection;
 
             // if the touch action did prevented once this session
             if (this.manager.session.prevented) {
@@ -1355,23 +1354,23 @@
                 return;
             }
 
-            var actions = this.actions;
-            var hasNone =
+            const actions = this.actions;
+            const hasNone =
                 inStr(actions, TOUCH_ACTION_NONE) &&
                 !TOUCH_ACTION_MAP[TOUCH_ACTION_NONE];
-            var hasPanY =
+            const hasPanY =
                 inStr(actions, TOUCH_ACTION_PAN_Y) &&
                 !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_Y];
-            var hasPanX =
+            const hasPanX =
                 inStr(actions, TOUCH_ACTION_PAN_X) &&
                 !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_X];
 
             if (hasNone) {
-                //do not prevent defaults if this is a tap gesture
+                // do not prevent defaults if this is a tap gesture
 
-                var isTapPointer = input.pointers.length === 1;
-                var isTapMovement = input.distance < 2;
-                var isTapTouchTime = input.deltaTime < 250;
+                const isTapPointer = input.pointers.length === 1;
+                const isTapMovement = input.distance < 2;
+                const isTapTouchTime = input.deltaTime < 250;
 
                 if (isTapPointer && isTapMovement && isTapTouchTime) {
                     return;
@@ -1396,7 +1395,7 @@
          * call preventDefault to prevent the browser's default behavior (scrolling in most cases)
          * @param {Object} srcEvent
          */
-        preventSrc: function(srcEvent) {
+        preventSrc(srcEvent) {
             this.manager.session.prevented = true;
             srcEvent.preventDefault();
         }
@@ -1413,8 +1412,8 @@
             return TOUCH_ACTION_NONE;
         }
 
-        var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
-        var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
+        const hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
+        const hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
 
         // if both pan-x and pan-y are set (different recognizers
         // for different directions, e.g. horizontal pan but vertical swipe?)
@@ -1441,8 +1440,8 @@
         if (!NATIVE_TOUCH_ACTION) {
             return false;
         }
-        var touchMap = {};
-        var cssSupports = window.CSS && window.CSS.supports;
+        const touchMap = {};
+        const cssSupports = window.CSS && window.CSS.supports;
         [
             'auto',
             'manipulation',
@@ -1450,7 +1449,7 @@
             'pan-x',
             'pan-x pan-y',
             'none'
-        ].forEach(function(val) {
+        ].forEach(val => {
             // If css.supports is not supported but there is native touch-action assume it supports
             // all values. This is the case for IE 10 and 11.
             touchMap[val] = cssSupports
@@ -1487,13 +1486,13 @@
      *                                         |
      *                                  Ended/Recognized
      */
-    var STATE_POSSIBLE = 1;
-    var STATE_BEGAN = 2;
-    var STATE_CHANGED = 4;
-    var STATE_ENDED = 8;
-    var STATE_RECOGNIZED = STATE_ENDED;
-    var STATE_CANCELLED = 16;
-    var STATE_FAILED = 32;
+    const STATE_POSSIBLE = 1;
+    const STATE_BEGAN = 2;
+    const STATE_CHANGED = 4;
+    const STATE_ENDED = 8;
+    const STATE_RECOGNIZED = STATE_ENDED;
+    const STATE_CANCELLED = 16;
+    const STATE_FAILED = 32;
 
     /**
      * Recognizer
@@ -1529,7 +1528,7 @@
          * @param {Object} options
          * @return {Recognizer}
          */
-        set: function(options) {
+        set(options) {
             assign(this.options, options);
 
             // also update the touchAction, in case something changed about the directions/enabled state
@@ -1542,12 +1541,12 @@
          * @param {Recognizer} otherRecognizer
          * @returns {Recognizer} this
          */
-        recognizeWith: function(otherRecognizer) {
+        recognizeWith(otherRecognizer) {
             if (invokeArrayArg(otherRecognizer, 'recognizeWith', this)) {
                 return this;
             }
 
-            var simultaneous = this.simultaneous;
+            const simultaneous = this.simultaneous;
             otherRecognizer = getRecognizerByNameIfManager(
                 otherRecognizer,
                 this
@@ -1564,7 +1563,7 @@
          * @param {Recognizer} otherRecognizer
          * @returns {Recognizer} this
          */
-        dropRecognizeWith: function(otherRecognizer) {
+        dropRecognizeWith(otherRecognizer) {
             if (invokeArrayArg(otherRecognizer, 'dropRecognizeWith', this)) {
                 return this;
             }
@@ -1582,12 +1581,12 @@
          * @param {Recognizer} otherRecognizer
          * @returns {Recognizer} this
          */
-        requireFailure: function(otherRecognizer) {
+        requireFailure(otherRecognizer) {
             if (invokeArrayArg(otherRecognizer, 'requireFailure', this)) {
                 return this;
             }
 
-            var requireFail = this.requireFail;
+            const requireFail = this.requireFail;
             otherRecognizer = getRecognizerByNameIfManager(
                 otherRecognizer,
                 this
@@ -1604,7 +1603,7 @@
          * @param {Recognizer} otherRecognizer
          * @returns {Recognizer} this
          */
-        dropRequireFailure: function(otherRecognizer) {
+        dropRequireFailure(otherRecognizer) {
             if (invokeArrayArg(otherRecognizer, 'dropRequireFailure', this)) {
                 return this;
             }
@@ -1613,7 +1612,7 @@
                 otherRecognizer,
                 this
             );
-            var index = inArray(this.requireFail, otherRecognizer);
+            const index = inArray(this.requireFail, otherRecognizer);
             if (index > -1) {
                 this.requireFail.splice(index, 1);
             }
@@ -1624,7 +1623,7 @@
          * has require failures boolean
          * @returns {boolean}
          */
-        hasRequireFailures: function() {
+        hasRequireFailures() {
             return this.requireFail.length > 0;
         },
 
@@ -1633,7 +1632,7 @@
          * @param {Recognizer} otherRecognizer
          * @returns {Boolean}
          */
-        canRecognizeWith: function(otherRecognizer) {
+        canRecognizeWith(otherRecognizer) {
             return !!this.simultaneous[otherRecognizer.id];
         },
 
@@ -1642,9 +1641,9 @@
          * that all the needed recognizers has failed before emitting.
          * @param {Object} input
          */
-        emit: function(input) {
-            var self = this;
-            var state = this.state;
+        emit(input) {
+            const self = this;
+            const state = this.state;
 
             function emit(event) {
                 self.manager.emit(event, input);
@@ -1674,7 +1673,7 @@
          * otherwise, setup the state to FAILED.
          * @param {Object} input
          */
-        tryEmit: function(input) {
+        tryEmit(input) {
             if (this.canEmit()) {
                 return this.emit(input);
             }
@@ -1686,8 +1685,8 @@
          * can we emit?
          * @returns {boolean}
          */
-        canEmit: function() {
-            var i = 0;
+        canEmit() {
+            let i = 0;
             while (i < this.requireFail.length) {
                 if (
                     !(
@@ -1706,10 +1705,10 @@
          * update the recognizer
          * @param {Object} inputData
          */
-        recognize: function(inputData) {
+        recognize(inputData) {
             // make a new copy of the inputData
             // so we can change the inputData without messing up the other recognizers
-            var inputDataClone = assign({}, inputData);
+            const inputDataClone = assign({}, inputData);
 
             // is is enabled and allow recognizing?
             if (!boolOrFn(this.options.enable, [this, inputDataClone])) {
@@ -1745,21 +1744,21 @@
          * @param {Object} inputData
          * @returns {Const} STATE
          */
-        process: function(inputData) {}, // jshint ignore:line
+        process(inputData) {}, // jshint ignore:line
 
         /**
          * return the preferred touch-action
          * @virtual
          * @returns {Array}
          */
-        getTouchAction: function() {},
+        getTouchAction() {},
 
         /**
          * called when the gesture isn't allowed to recognize
          * like when another is being recognized or it is disabled
          * @virtual
          */
-        reset: function() {}
+        reset() {}
     };
 
     /**
@@ -1770,11 +1769,14 @@
     function stateStr(state) {
         if (state & STATE_CANCELLED) {
             return 'cancel';
-        } else if (state & STATE_ENDED) {
+        }
+        if (state & STATE_ENDED) {
             return 'end';
-        } else if (state & STATE_CHANGED) {
+        }
+        if (state & STATE_CHANGED) {
             return 'move';
-        } else if (state & STATE_BEGAN) {
+        }
+        if (state & STATE_BEGAN) {
             return 'start';
         }
         return '';
@@ -1788,11 +1790,14 @@
     function directionStr(direction) {
         if (direction == DIRECTION_DOWN) {
             return 'down';
-        } else if (direction == DIRECTION_UP) {
+        }
+        if (direction == DIRECTION_UP) {
             return 'up';
-        } else if (direction == DIRECTION_LEFT) {
+        }
+        if (direction == DIRECTION_LEFT) {
             return 'left';
-        } else if (direction == DIRECTION_RIGHT) {
+        }
+        if (direction == DIRECTION_RIGHT) {
             return 'right';
         }
         return '';
@@ -1805,7 +1810,7 @@
      * @returns {Recognizer}
      */
     function getRecognizerByNameIfManager(otherRecognizer, recognizer) {
-        var manager = recognizer.manager;
+        const manager = recognizer.manager;
         if (manager) {
             return manager.get(otherRecognizer);
         }
@@ -1840,8 +1845,8 @@
          * @param {Object} input
          * @returns {Boolean} recognized
          */
-        attrTest: function(input) {
-            var optionPointers = this.options.pointers;
+        attrTest(input) {
+            const optionPointers = this.options.pointers;
             return (
                 optionPointers === 0 || input.pointers.length === optionPointers
             );
@@ -1853,20 +1858,22 @@
          * @param {Object} input
          * @returns {*} State
          */
-        process: function(input) {
-            var state = this.state;
-            var eventType = input.eventType;
+        process(input) {
+            const state = this.state;
+            const eventType = input.eventType;
 
-            var isRecognized = state & (STATE_BEGAN | STATE_CHANGED);
-            var isValid = this.attrTest(input);
+            const isRecognized = state & (STATE_BEGAN | STATE_CHANGED);
+            const isValid = this.attrTest(input);
 
             // on cancel input and we've recognized before, return STATE_CANCELLED
             if (isRecognized && (eventType & INPUT_CANCEL || !isValid)) {
                 return state | STATE_CANCELLED;
-            } else if (isRecognized || isValid) {
+            }
+            if (isRecognized || isValid) {
                 if (eventType & INPUT_END) {
                     return state | STATE_ENDED;
-                } else if (!(state & STATE_BEGAN)) {
+                }
+                if (!(state & STATE_BEGAN)) {
                     return STATE_BEGAN;
                 }
                 return state | STATE_CHANGED;
@@ -1900,9 +1907,9 @@
             direction: DIRECTION_ALL
         },
 
-        getTouchAction: function() {
-            var direction = this.options.direction;
-            var actions = [];
+        getTouchAction() {
+            const direction = this.options.direction;
+            const actions = [];
             if (direction & DIRECTION_HORIZONTAL) {
                 actions.push(TOUCH_ACTION_PAN_Y);
             }
@@ -1912,13 +1919,13 @@
             return actions;
         },
 
-        directionTest: function(input) {
-            var options = this.options;
-            var hasMoved = true;
-            var distance = input.distance;
-            var direction = input.direction;
-            var x = input.deltaX;
-            var y = input.deltaY;
+        directionTest(input) {
+            const options = this.options;
+            let hasMoved = true;
+            let distance = input.distance;
+            let direction = input.direction;
+            const x = input.deltaX;
+            const y = input.deltaY;
 
             // lock to axis?
             if (!(direction & options.direction)) {
@@ -1950,7 +1957,7 @@
             );
         },
 
-        attrTest: function(input) {
+        attrTest(input) {
             return (
                 AttrRecognizer.prototype.attrTest.call(this, input) &&
                 (this.state & STATE_BEGAN ||
@@ -1958,11 +1965,11 @@
             );
         },
 
-        emit: function(input) {
+        emit(input) {
             this.pX = input.deltaX;
             this.pY = input.deltaY;
 
-            var direction = directionStr(input.direction);
+            const direction = directionStr(input.direction);
 
             if (direction) {
                 input.additionalEvent = this.options.event + direction;
@@ -1992,11 +1999,11 @@
             pointers: 2
         },
 
-        getTouchAction: function() {
+        getTouchAction() {
             return [TOUCH_ACTION_NONE];
         },
 
-        attrTest: function(input) {
+        attrTest(input) {
             return (
                 this._super.attrTest.call(this, input) &&
                 (Math.abs(input.scale - 1) > this.options.threshold ||
@@ -2004,9 +2011,9 @@
             );
         },
 
-        emit: function(input) {
+        emit(input) {
             if (input.scale !== 1) {
-                var inOut = input.scale < 1 ? 'in' : 'out';
+                const inOut = input.scale < 1 ? 'in' : 'out';
                 input.additionalEvent = this.options.event + inOut;
             }
             this._super.emit.call(this, input);
@@ -2038,15 +2045,15 @@
             threshold: 9 // a minimal movement is ok, but keep it low
         },
 
-        getTouchAction: function() {
+        getTouchAction() {
             return [TOUCH_ACTION_AUTO];
         },
 
-        process: function(input) {
-            var options = this.options;
-            var validPointers = input.pointers.length === options.pointers;
-            var validMovement = input.distance < options.threshold;
-            var validTime = input.deltaTime > options.time;
+        process(input) {
+            const options = this.options;
+            const validPointers = input.pointers.length === options.pointers;
+            const validMovement = input.distance < options.threshold;
+            const validTime = input.deltaTime > options.time;
 
             this._input = input;
 
@@ -2074,17 +2081,17 @@
             return STATE_FAILED;
         },
 
-        reset: function() {
+        reset() {
             clearTimeout(this._timer);
         },
 
-        emit: function(input) {
+        emit(input) {
             if (this.state !== STATE_RECOGNIZED) {
                 return;
             }
 
             if (input && input.eventType & INPUT_END) {
-                this.manager.emit(this.options.event + 'up', input);
+                this.manager.emit(`${this.options.event}up`, input);
             } else {
                 this._input.timeStamp = now();
                 this.manager.emit(this.options.event, this._input);
@@ -2113,11 +2120,11 @@
             pointers: 2
         },
 
-        getTouchAction: function() {
+        getTouchAction() {
             return [TOUCH_ACTION_NONE];
         },
 
-        attrTest: function(input) {
+        attrTest(input) {
             return (
                 this._super.attrTest.call(this, input) &&
                 (Math.abs(input.rotation) > this.options.threshold ||
@@ -2149,13 +2156,13 @@
             pointers: 1
         },
 
-        getTouchAction: function() {
+        getTouchAction() {
             return PanRecognizer.prototype.getTouchAction.call(this);
         },
 
-        attrTest: function(input) {
-            var direction = this.options.direction;
-            var velocity;
+        attrTest(input) {
+            const direction = this.options.direction;
+            let velocity;
 
             if (direction & (DIRECTION_HORIZONTAL | DIRECTION_VERTICAL)) {
                 velocity = input.overallVelocity;
@@ -2175,8 +2182,8 @@
             );
         },
 
-        emit: function(input) {
-            var direction = directionStr(input.offsetDirection);
+        emit(input) {
+            const direction = directionStr(input.offsetDirection);
             if (direction) {
                 this.manager.emit(this.options.event + direction, input);
             }
@@ -2223,16 +2230,16 @@
             posThreshold: 10 // a multi-tap can be a bit off the initial position
         },
 
-        getTouchAction: function() {
+        getTouchAction() {
             return [TOUCH_ACTION_MANIPULATION];
         },
 
-        process: function(input) {
-            var options = this.options;
+        process(input) {
+            const options = this.options;
 
-            var validPointers = input.pointers.length === options.pointers;
-            var validMovement = input.distance < options.threshold;
-            var validTouchTime = input.deltaTime < options.time;
+            const validPointers = input.pointers.length === options.pointers;
+            const validMovement = input.distance < options.threshold;
+            const validTouchTime = input.deltaTime < options.time;
 
             this.reset();
 
@@ -2247,10 +2254,10 @@
                     return this.failTimeout();
                 }
 
-                var validInterval = this.pTime
+                const validInterval = this.pTime
                     ? input.timeStamp - this.pTime < options.interval
                     : true;
-                var validMultiTap =
+                const validMultiTap =
                     !this.pCenter ||
                     getDistance(this.pCenter, input.center) <
                         options.posThreshold;
@@ -2268,29 +2275,28 @@
 
                 // if tap count matches we have recognized it,
                 // else it has began recognizing...
-                var tapCount = this.count % options.taps;
+                const tapCount = this.count % options.taps;
                 if (tapCount === 0) {
                     // no failing requirements, immediately trigger the tap event
                     // or wait as long as the multitap interval to trigger
                     if (!this.hasRequireFailures()) {
                         return STATE_RECOGNIZED;
-                    } else {
-                        this._timer = setTimeoutContext(
-                            function() {
-                                this.state = STATE_RECOGNIZED;
-                                this.tryEmit();
-                            },
-                            options.interval,
-                            this
-                        );
-                        return STATE_BEGAN;
                     }
+                    this._timer = setTimeoutContext(
+                        function() {
+                            this.state = STATE_RECOGNIZED;
+                            this.tryEmit();
+                        },
+                        options.interval,
+                        this
+                    );
+                    return STATE_BEGAN;
                 }
             }
             return STATE_FAILED;
         },
 
-        failTimeout: function() {
+        failTimeout() {
             this._timer = setTimeoutContext(
                 function() {
                     this.state = STATE_FAILED;
@@ -2301,11 +2307,11 @@
             return STATE_FAILED;
         },
 
-        reset: function() {
+        reset() {
             clearTimeout(this._timer);
         },
 
-        emit: function() {
+        emit() {
             if (this.state == STATE_RECOGNIZED) {
                 this._input.tapCount = this.count;
                 this.manager.emit(this.options.event, this._input);
@@ -2445,8 +2451,8 @@
         }
     };
 
-    var STOP = 1;
-    var FORCED_STOP = 2;
+    const STOP = 1;
+    const FORCED_STOP = 2;
 
     /**
      * Manager
@@ -2473,7 +2479,7 @@
         each(
             this.options.recognizers,
             function(item) {
-                var recognizer = this.add(new item[0](item[1]));
+                const recognizer = this.add(new item[0](item[1]));
                 item[2] && recognizer.recognizeWith(item[2]);
                 item[3] && recognizer.requireFailure(item[3]);
             },
@@ -2487,7 +2493,7 @@
          * @param {Object} options
          * @returns {Manager}
          */
-        set: function(options) {
+        set(options) {
             assign(this.options, options);
 
             // Options that need a little more setup
@@ -2509,7 +2515,7 @@
          * When forced, the recognizer cycle is stopped immediately.
          * @param {Boolean} [force]
          */
-        stop: function(force) {
+        stop(force) {
             this.session.stopped = force ? FORCED_STOP : STOP;
         },
 
@@ -2519,8 +2525,8 @@
          * it walks through all the recognizers and tries to detect the gesture that is being made
          * @param {Object} inputData
          */
-        recognize: function(inputData) {
-            var session = this.session;
+        recognize(inputData) {
+            const session = this.session;
             if (session.stopped) {
                 return;
             }
@@ -2528,13 +2534,13 @@
             // run the touch-action polyfill
             this.touchAction.preventDefaults(inputData);
 
-            var recognizer;
-            var recognizers = this.recognizers;
+            let recognizer;
+            const recognizers = this.recognizers;
 
             // this holds the recognizer that is being recognized.
             // so the recognizer's state needs to be BEGAN, CHANGED, ENDED or RECOGNIZED
             // if no recognizer is detecting a thing, it is set to `null`
-            var curRecognizer = session.curRecognizer;
+            let curRecognizer = session.curRecognizer;
 
             // reset when the last recognizer is recognized
             // or when we're in a new session
@@ -2545,7 +2551,7 @@
                 curRecognizer = session.curRecognizer = null;
             }
 
-            var i = 0;
+            let i = 0;
             while (i < recognizers.length) {
                 recognizer = recognizers[i];
 
@@ -2585,13 +2591,13 @@
          * @param {Recognizer|String} recognizer
          * @returns {Recognizer|Null}
          */
-        get: function(recognizer) {
+        get(recognizer) {
             if (recognizer instanceof Recognizer) {
                 return recognizer;
             }
 
-            var recognizers = this.recognizers;
-            for (var i = 0; i < recognizers.length; i++) {
+            const recognizers = this.recognizers;
+            for (let i = 0; i < recognizers.length; i++) {
                 if (recognizers[i].options.event == recognizer) {
                     return recognizers[i];
                 }
@@ -2605,13 +2611,13 @@
          * @param {Recognizer} recognizer
          * @returns {Recognizer|Manager}
          */
-        add: function(recognizer) {
+        add(recognizer) {
             if (invokeArrayArg(recognizer, 'add', this)) {
                 return this;
             }
 
             // remove existing
-            var existing = this.get(recognizer.options.event);
+            const existing = this.get(recognizer.options.event);
             if (existing) {
                 this.remove(existing);
             }
@@ -2628,7 +2634,7 @@
          * @param {Recognizer|String} recognizer
          * @returns {Manager}
          */
-        remove: function(recognizer) {
+        remove(recognizer) {
             if (invokeArrayArg(recognizer, 'remove', this)) {
                 return this;
             }
@@ -2637,8 +2643,8 @@
 
             // let's make sure this recognizer exists
             if (recognizer) {
-                var recognizers = this.recognizers;
-                var index = inArray(recognizers, recognizer);
+                const recognizers = this.recognizers;
+                const index = inArray(recognizers, recognizer);
 
                 if (index !== -1) {
                     recognizers.splice(index, 1);
@@ -2655,7 +2661,7 @@
          * @param {Function} handler
          * @returns {EventEmitter} this
          */
-        on: function(events, handler) {
+        on(events, handler) {
             if (events === undefined) {
                 return;
             }
@@ -2663,8 +2669,8 @@
                 return;
             }
 
-            var handlers = this.handlers;
-            each(splitStr(events), function(event) {
+            const handlers = this.handlers;
+            each(splitStr(events), event => {
                 handlers[event] = handlers[event] || [];
                 handlers[event].push(handler);
             });
@@ -2677,13 +2683,13 @@
          * @param {Function} [handler]
          * @returns {EventEmitter} this
          */
-        off: function(events, handler) {
+        off(events, handler) {
             if (events === undefined) {
                 return;
             }
 
-            var handlers = this.handlers;
-            each(splitStr(events), function(event) {
+            const handlers = this.handlers;
+            each(splitStr(events), event => {
                 if (!handler) {
                     delete handlers[event];
                 } else {
@@ -2702,14 +2708,15 @@
          * @param {String} event
          * @param {Object} data
          */
-        emit: function(event, data) {
+        emit(event, data) {
             // we also want to trigger dom events
             if (this.options.domEvents) {
                 triggerDomEvent(event, data);
             }
 
             // no handlers, so skip it all
-            var handlers = this.handlers[event] && this.handlers[event].slice();
+            const handlers =
+                this.handlers[event] && this.handlers[event].slice();
             if (!handlers || !handlers.length) {
                 return;
             }
@@ -2719,7 +2726,7 @@
                 data.srcEvent.preventDefault();
             };
 
-            var i = 0;
+            let i = 0;
             while (i < handlers.length) {
                 handlers[i](data);
                 i++;
@@ -2730,7 +2737,7 @@
          * destroy the manager and unbinds all events
          * it doesn't unbind dom events, that is the user own responsibility
          */
-        destroy: function() {
+        destroy() {
             this.element && toggleCssProps(this, false);
 
             this.handlers = {};
@@ -2746,12 +2753,12 @@
      * @param {Boolean} add
      */
     function toggleCssProps(manager, add) {
-        var element = manager.element;
+        const element = manager.element;
         if (!element.style) {
             return;
         }
-        var prop;
-        each(manager.options.cssProps, function(value, name) {
+        let prop;
+        each(manager.options.cssProps, (value, name) => {
             prop = prefixed(element.style, name);
             if (add) {
                 manager.oldCssProps[prop] = element.style[prop];
@@ -2771,47 +2778,47 @@
      * @param {Object} data
      */
     function triggerDomEvent(event, data) {
-        var gestureEvent = document.createEvent('Event');
+        const gestureEvent = document.createEvent('Event');
         gestureEvent.initEvent(event, true, true);
         gestureEvent.gesture = data;
         data.target.dispatchEvent(gestureEvent);
     }
 
     assign(Hammer, {
-        INPUT_START: INPUT_START,
-        INPUT_MOVE: INPUT_MOVE,
-        INPUT_END: INPUT_END,
-        INPUT_CANCEL: INPUT_CANCEL,
+        INPUT_START,
+        INPUT_MOVE,
+        INPUT_END,
+        INPUT_CANCEL,
 
-        STATE_POSSIBLE: STATE_POSSIBLE,
-        STATE_BEGAN: STATE_BEGAN,
-        STATE_CHANGED: STATE_CHANGED,
-        STATE_ENDED: STATE_ENDED,
-        STATE_RECOGNIZED: STATE_RECOGNIZED,
-        STATE_CANCELLED: STATE_CANCELLED,
-        STATE_FAILED: STATE_FAILED,
+        STATE_POSSIBLE,
+        STATE_BEGAN,
+        STATE_CHANGED,
+        STATE_ENDED,
+        STATE_RECOGNIZED,
+        STATE_CANCELLED,
+        STATE_FAILED,
 
-        DIRECTION_NONE: DIRECTION_NONE,
-        DIRECTION_LEFT: DIRECTION_LEFT,
-        DIRECTION_RIGHT: DIRECTION_RIGHT,
-        DIRECTION_UP: DIRECTION_UP,
-        DIRECTION_DOWN: DIRECTION_DOWN,
-        DIRECTION_HORIZONTAL: DIRECTION_HORIZONTAL,
-        DIRECTION_VERTICAL: DIRECTION_VERTICAL,
-        DIRECTION_ALL: DIRECTION_ALL,
+        DIRECTION_NONE,
+        DIRECTION_LEFT,
+        DIRECTION_RIGHT,
+        DIRECTION_UP,
+        DIRECTION_DOWN,
+        DIRECTION_HORIZONTAL,
+        DIRECTION_VERTICAL,
+        DIRECTION_ALL,
 
-        Manager: Manager,
-        Input: Input,
-        TouchAction: TouchAction,
+        Manager,
+        Input,
+        TouchAction,
 
-        TouchInput: TouchInput,
-        MouseInput: MouseInput,
-        PointerEventInput: PointerEventInput,
-        TouchMouseInput: TouchMouseInput,
-        SingleTouchInput: SingleTouchInput,
+        TouchInput,
+        MouseInput,
+        PointerEventInput,
+        TouchMouseInput,
+        SingleTouchInput,
 
-        Recognizer: Recognizer,
-        AttrRecognizer: AttrRecognizer,
+        Recognizer,
+        AttrRecognizer,
         Tap: TapRecognizer,
         Pan: PanRecognizer,
         Swipe: SwipeRecognizer,
@@ -2821,18 +2828,18 @@
 
         on: addEventListeners,
         off: removeEventListeners,
-        each: each,
-        merge: merge,
-        extend: extend,
-        assign: assign,
-        inherit: inherit,
-        bindFn: bindFn,
-        prefixed: prefixed
+        each,
+        merge,
+        extend,
+        assign,
+        inherit,
+        bindFn,
+        prefixed
     });
 
     // this prevents errors when Hammer is loaded in the presence of an AMD
     //  style loader but by script tag, not by the loader.
-    var freeGlobal =
+    const freeGlobal =
         typeof window !== 'undefined'
             ? window
             : typeof self !== 'undefined'
@@ -2841,10 +2848,8 @@
     freeGlobal.Hammer = Hammer;
 
     if (typeof define === 'function' && define.amd) {
-        define(function() {
-            return Hammer;
-        });
-    } else if (typeof module != 'undefined' && module.exports) {
+        define(() => Hammer);
+    } else if (typeof module !== 'undefined' && module.exports) {
         module.exports = Hammer;
     } else {
         window[exportName] = Hammer;
@@ -2854,27 +2859,27 @@
 // Main scripts:
 $(document).ready(function() {
     // DOMMouseScroll included for firefox support
-    var canScroll = true,
-        scrollController = null;
-    $(this).on('mousewheel DOMMouseScroll', function(e) {
+    let canScroll = true;
+    let scrollController = null;
+    $(this).on('mousewheel DOMMouseScroll', e => {
         if (!$('.outer-nav').hasClass('is-vis')) {
             e.preventDefault();
 
-            var delta = e.originalEvent.wheelDelta
+            const delta = e.originalEvent.wheelDelta
                 ? -e.originalEvent.wheelDelta
                 : e.originalEvent.detail * 20;
 
             if (delta > 50 && canScroll) {
                 canScroll = false;
                 clearTimeout(scrollController);
-                scrollController = setTimeout(function() {
+                scrollController = setTimeout(() => {
                     canScroll = true;
                 }, 800);
                 updateHelper(1);
             } else if (delta < -50 && canScroll) {
                 canScroll = false;
                 clearTimeout(scrollController);
-                scrollController = setTimeout(function() {
+                scrollController = setTimeout(() => {
                     canScroll = true;
                 }, 800);
                 updateHelper(-1);
@@ -2884,47 +2889,49 @@ $(document).ready(function() {
 
     $('.side-nav li, .outer-nav li').click(function() {
         if (!$(this).hasClass('is-active')) {
-            var $this = $(this),
-                curActive = $this.parent().find('.is-active'),
-                curPos = $this
+            const $this = $(this);
+            const curActive = $this.parent().find('.is-active');
+            const curPos = $this
+                .parent()
+                .children()
+                .index(curActive);
+            const nextPos = $this
+                .parent()
+                .children()
+                .index($this);
+            const lastItem =
+                $(this)
                     .parent()
-                    .children()
-                    .index(curActive),
-                nextPos = $this
-                    .parent()
-                    .children()
-                    .index($this),
-                lastItem =
-                    $(this)
-                        .parent()
-                        .children().length - 1;
+                    .children().length - 1;
 
             updateNavs(nextPos);
             updateContent(curPos, nextPos, lastItem);
         }
     });
 
-    $('.cta').click(function() {
-        var curActive = $('.side-nav').find('.is-active'),
-            curPos = $('.side-nav')
-                .children()
-                .index(curActive),
-            lastItem = $('.side-nav').children().length - 1,
-            nextPos = lastItem;
+    $('.cta').click(() => {
+        const curActive = $('.side-nav').find('.is-active');
+
+        const curPos = $('.side-nav')
+            .children()
+            .index(curActive);
+        const lastItem = $('.side-nav').children().length - 1;
+        const nextPos = lastItem;
 
         updateNavs(lastItem);
         updateContent(curPos, nextPos, lastItem);
     });
 
     // swipe support for touch devices
-    var targetElement = document.getElementById('viewport'),
-        mc = new Hammer(targetElement);
+    const targetElement = document.getElementById('viewport');
+
+    const mc = new Hammer(targetElement);
     mc.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
-    mc.on('swipeup swipedown', function(e) {
+    mc.on('swipeup swipedown', e => {
         updateHelper(e);
     });
 
-    $(document).keyup(function(e) {
+    $(document).keyup(e => {
         if (!$('.outer-nav').hasClass('is-vis')) {
             e.preventDefault();
             updateHelper(e);
@@ -2933,12 +2940,12 @@ $(document).ready(function() {
 
     // determine scroll, swipe, and arrow key direction
     function updateHelper(param) {
-        var curActive = $('.side-nav').find('.is-active'),
-            curPos = $('.side-nav')
-                .children()
-                .index(curActive),
-            lastItem = $('.side-nav').children().length - 1,
-            nextPos = 0;
+        const curActive = $('.side-nav').find('.is-active');
+        const curPos = $('.side-nav')
+            .children()
+            .index(curActive);
+        const lastItem = $('.side-nav').children().length - 1;
+        let nextPos = 0;
 
         if (param.type === 'swipeup' || param.keyCode === 40 || param > 0) {
             if (curPos !== lastItem) {
@@ -3023,9 +3030,9 @@ $(document).ready(function() {
     }
 
     function outerNav() {
-        $('.header--nav-toggle').click(function() {
+        $('.header--nav-toggle').click(() => {
             $('.perspective').addClass('perspective--modalview');
-            setTimeout(function() {
+            setTimeout(() => {
                 $('.perspective').addClass('effect-rotate-left--animate');
             }, 25);
             $('.outer-nav, .outer-nav li, .outer-nav--return').addClass(
@@ -3033,9 +3040,9 @@ $(document).ready(function() {
             );
         });
 
-        $('.outer-nav--return, .outer-nav li').click(function() {
+        $('.outer-nav--return, .outer-nav li').click(() => {
             $('.perspective').removeClass('effect-rotate-left--animate');
-            setTimeout(function() {
+            setTimeout(() => {
                 $('.perspective').removeClass('perspective--modalview');
             }, 400);
             $('.outer-nav, .outer-nav li, .outer-nav--return').removeClass(
@@ -3046,28 +3053,35 @@ $(document).ready(function() {
 
     function workSlider() {
         $('.slider--prev, .slider--next').click(function() {
-            var $this = $(this),
-                curLeft = $('.slider').find('.slider--item-left'),
-                curLeftPos = $('.slider')
-                    .children()
-                    .index(curLeft),
-                curCenter = $('.slider').find('.slider--item-center'),
-                curCenterPos = $('.slider')
-                    .children()
-                    .index(curCenter),
-                curRight = $('.slider').find('.slider--item-right'),
-                curRightPos = $('.slider')
-                    .children()
-                    .index(curRight),
-                totalWorks = $('.slider').children().length,
-                $left = $('.slider--item-left'),
-                $center = $('.slider--item-center'),
-                $right = $('.slider--item-right'),
-                $item = $('.slider--item');
+            const $this = $(this);
+            const curLeft = $('.slider').find('.slider--item-left');
+
+            const curLeftPos = $('.slider')
+                .children()
+                .index(curLeft);
+            const curCenter = $('.slider').find('.slider--item-center');
+
+            const curCenterPos = $('.slider')
+                .children()
+                .index(curCenter);
+
+            const curRight = $('.slider').find('.slider--item-right');
+            const curRightPos = $('.slider')
+                .children()
+                .index(curRight);
+
+            const totalWorks = $('.slider').children().length;
+
+            const $left = $('.slider--item-left');
+
+            const $center = $('.slider--item-center');
+
+            const $right = $('.slider--item-right');
+            const $item = $('.slider--item');
 
             $('.slider').animate({ opacity: 0 }, 400);
 
-            setTimeout(function() {
+            setTimeout(() => {
                 if ($this.hasClass('slider--next')) {
                     if (
                         curLeftPos < totalWorks - 1 &&
@@ -3086,108 +3100,102 @@ $(document).ready(function() {
                             .removeClass('slider--item-right')
                             .next()
                             .addClass('slider--item-right');
-                    } else {
-                        if (curLeftPos === totalWorks - 1) {
-                            $item
-                                .removeClass('slider--item-left')
-                                .first()
-                                .addClass('slider--item-left');
-                            $center
-                                .removeClass('slider--item-center')
-                                .next()
-                                .addClass('slider--item-center');
-                            $right
-                                .removeClass('slider--item-right')
-                                .next()
-                                .addClass('slider--item-right');
-                        } else if (curCenterPos === totalWorks - 1) {
-                            $left
-                                .removeClass('slider--item-left')
-                                .next()
-                                .addClass('slider--item-left');
-                            $item
-                                .removeClass('slider--item-center')
-                                .first()
-                                .addClass('slider--item-center');
-                            $right
-                                .removeClass('slider--item-right')
-                                .next()
-                                .addClass('slider--item-right');
-                        } else {
-                            $left
-                                .removeClass('slider--item-left')
-                                .next()
-                                .addClass('slider--item-left');
-                            $center
-                                .removeClass('slider--item-center')
-                                .next()
-                                .addClass('slider--item-center');
-                            $item
-                                .removeClass('slider--item-right')
-                                .first()
-                                .addClass('slider--item-right');
-                        }
-                    }
-                } else {
-                    if (
-                        curLeftPos !== 0 &&
-                        curCenterPos !== 0 &&
-                        curRightPos !== 0
-                    ) {
-                        $left
+                    } else if (curLeftPos === totalWorks - 1) {
+                        $item
                             .removeClass('slider--item-left')
-                            .prev()
+                            .first()
                             .addClass('slider--item-left');
                         $center
                             .removeClass('slider--item-center')
-                            .prev()
+                            .next()
                             .addClass('slider--item-center');
                         $right
                             .removeClass('slider--item-right')
-                            .prev()
+                            .next()
+                            .addClass('slider--item-right');
+                    } else if (curCenterPos === totalWorks - 1) {
+                        $left
+                            .removeClass('slider--item-left')
+                            .next()
+                            .addClass('slider--item-left');
+                        $item
+                            .removeClass('slider--item-center')
+                            .first()
+                            .addClass('slider--item-center');
+                        $right
+                            .removeClass('slider--item-right')
+                            .next()
                             .addClass('slider--item-right');
                     } else {
-                        if (curLeftPos === 0) {
-                            $item
-                                .removeClass('slider--item-left')
-                                .last()
-                                .addClass('slider--item-left');
-                            $center
-                                .removeClass('slider--item-center')
-                                .prev()
-                                .addClass('slider--item-center');
-                            $right
-                                .removeClass('slider--item-right')
-                                .prev()
-                                .addClass('slider--item-right');
-                        } else if (curCenterPos === 0) {
-                            $left
-                                .removeClass('slider--item-left')
-                                .prev()
-                                .addClass('slider--item-left');
-                            $item
-                                .removeClass('slider--item-center')
-                                .last()
-                                .addClass('slider--item-center');
-                            $right
-                                .removeClass('slider--item-right')
-                                .prev()
-                                .addClass('slider--item-right');
-                        } else {
-                            $left
-                                .removeClass('slider--item-left')
-                                .prev()
-                                .addClass('slider--item-left');
-                            $center
-                                .removeClass('slider--item-center')
-                                .prev()
-                                .addClass('slider--item-center');
-                            $item
-                                .removeClass('slider--item-right')
-                                .last()
-                                .addClass('slider--item-right');
-                        }
+                        $left
+                            .removeClass('slider--item-left')
+                            .next()
+                            .addClass('slider--item-left');
+                        $center
+                            .removeClass('slider--item-center')
+                            .next()
+                            .addClass('slider--item-center');
+                        $item
+                            .removeClass('slider--item-right')
+                            .first()
+                            .addClass('slider--item-right');
                     }
+                } else if (
+                    curLeftPos !== 0 &&
+                    curCenterPos !== 0 &&
+                    curRightPos !== 0
+                ) {
+                    $left
+                        .removeClass('slider--item-left')
+                        .prev()
+                        .addClass('slider--item-left');
+                    $center
+                        .removeClass('slider--item-center')
+                        .prev()
+                        .addClass('slider--item-center');
+                    $right
+                        .removeClass('slider--item-right')
+                        .prev()
+                        .addClass('slider--item-right');
+                } else if (curLeftPos === 0) {
+                    $item
+                        .removeClass('slider--item-left')
+                        .last()
+                        .addClass('slider--item-left');
+                    $center
+                        .removeClass('slider--item-center')
+                        .prev()
+                        .addClass('slider--item-center');
+                    $right
+                        .removeClass('slider--item-right')
+                        .prev()
+                        .addClass('slider--item-right');
+                } else if (curCenterPos === 0) {
+                    $left
+                        .removeClass('slider--item-left')
+                        .prev()
+                        .addClass('slider--item-left');
+                    $item
+                        .removeClass('slider--item-center')
+                        .last()
+                        .addClass('slider--item-center');
+                    $right
+                        .removeClass('slider--item-right')
+                        .prev()
+                        .addClass('slider--item-right');
+                } else {
+                    $left
+                        .removeClass('slider--item-left')
+                        .prev()
+                        .addClass('slider--item-left');
+                    $center
+                        .removeClass('slider--item-center')
+                        .prev()
+                        .addClass('slider--item-center');
+                    $item
+                        .removeClass('slider--item-right')
+                        .last()
+                        .addClass('slider--item-right');
                 }
             }, 400);
 
@@ -3197,7 +3205,7 @@ $(document).ready(function() {
 
     function transitionLabels() {
         $('.work-request--information input').focusout(function() {
-            var textVal = $(this).val();
+            const textVal = $(this).val();
 
             if (textVal === '') {
                 $(this).removeClass('has-value');
