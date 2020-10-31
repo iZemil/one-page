@@ -1,17 +1,20 @@
 createLandscape({
-    palleteImage: '/img/pallete.png',
+    // palleteImage: '/img/pallete.png',
+    palleteImage: ''
 });
 
 function createLandscape(params) {
-    var container = document.querySelector('.landscape');
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    const container = document.querySelector('.landscape');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
-    var scene, renderer, camera;
-    var terrain;
+    let scene;
+    let renderer;
+    let camera;
+    let terrain;
 
-    var mouse = { x: 0, y: 0, xDamped: 0, yDamped: 0 };
-    var isMobile = typeof window.orientation !== 'undefined';
+    const mouse = { x: 0, y: 0, xDamped: 0, yDamped: 0 };
+    const isMobile = typeof window.orientation !== 'undefined';
 
     init();
 
@@ -21,8 +24,13 @@ function createLandscape(params) {
         sceneTextures();
         render();
 
-        if (isMobile) window.addEventListener('touchmove', onInputMove, { passive: false });
-        else window.addEventListener('mousemove', onInputMove);
+        if (isMobile) {
+            window.addEventListener('touchmove', onInputMove, {
+                passive: false
+            });
+        } else {
+            window.addEventListener('mousemove', onInputMove);
+        }
 
         window.addEventListener('resize', resize);
         resize();
@@ -30,7 +38,7 @@ function createLandscape(params) {
 
     function sceneSetup() {
         scene = new THREE.Scene();
-        var fogColor = new THREE.Color(0x333333);
+        const fogColor = new THREE.Color(0x333333);
         scene.background = fogColor;
         scene.fog = new THREE.Fog(fogColor, 0, 400);
 
@@ -45,16 +53,16 @@ function createLandscape(params) {
 
         renderer = new THREE.WebGLRenderer({
             canvas: container,
-            antialias: true,
+            antialias: true
         });
         renderer.setPixelRatio = devicePixelRatio;
         renderer.setSize(width, height);
     }
 
     function sceneElements() {
-        var geometry = new THREE.PlaneBufferGeometry(100, 400, 400, 400);
+        const geometry = new THREE.PlaneBufferGeometry(100, 400, 400, 400);
 
-        var uniforms = {
+        const uniforms = {
             time: { type: 'f', value: 0.0 },
             scroll: { type: 'f', value: 0.0 },
             distortCenter: { type: 'f', value: 0.1 },
@@ -62,15 +70,19 @@ function createLandscape(params) {
             pallete: { type: 't', value: null },
             speed: { type: 'f', value: 3 },
             maxHeight: { type: 'f', value: 10.0 },
-            color: new THREE.Color(1, 1, 1),
+            color: new THREE.Color(1, 1, 1)
         };
 
-        var material = new THREE.ShaderMaterial({
-            uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
+        const material = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.merge([
+                THREE.ShaderLib.basic.uniforms,
+                uniforms
+            ]),
             vertexShader: document.getElementById('custom-vertex').textContent,
-            fragmentShader: document.getElementById('custom-fragment').textContent,
+            fragmentShader: document.getElementById('custom-fragment')
+                .textContent,
             wireframe: false,
-            fog: true,
+            fog: true
         });
 
         terrain = new THREE.Mesh(geometry, material);
@@ -82,7 +94,7 @@ function createLandscape(params) {
 
     function sceneTextures() {
         // pallete
-        new THREE.TextureLoader().load(params.palleteImage, function(texture) {
+        new THREE.TextureLoader().load(params.palleteImage, texture => {
             terrain.material.uniforms.pallete.value = texture;
             terrain.material.needsUpdate = true;
         });
@@ -106,8 +118,8 @@ function createLandscape(params) {
         sunSphere.visible = false;
         scene.add(sunSphere);
 
-        var theta = Math.PI * -0.002;
-        var phi = 2 * Math.PI * -0.25;
+        const theta = Math.PI * -0.002;
+        const phi = 2 * Math.PI * -0.25;
 
         sunSphere.position.x = 400000 * Math.cos(phi);
         sunSphere.position.y = 400000 * Math.sin(phi) * Math.sin(theta);
@@ -128,7 +140,8 @@ function createLandscape(params) {
     function onInputMove(e) {
         e.preventDefault();
 
-        var x, y;
+        let x;
+        let y;
         if (e.type == 'mousemove') {
             x = e.clientX;
             y = e.clientY;
@@ -148,11 +161,18 @@ function createLandscape(params) {
         mouse.xDamped = lerp(mouse.xDamped, mouse.x, 0.1);
         mouse.yDamped = lerp(mouse.yDamped, mouse.y, 0.1);
 
-        var time = performance.now() * 0.001;
+        const time = performance.now() * 0.001;
         terrain.material.uniforms.time.value = time;
-        terrain.material.uniforms.scroll.value = time + map(mouse.yDamped, 0, height, 0, 4);
+        terrain.material.uniforms.scroll.value =
+            time + map(mouse.yDamped, 0, height, 0, 4);
         terrain.material.uniforms.distortCenter.value = Math.sin(time) * 0.1;
-        terrain.material.uniforms.roadWidth.value = map(mouse.xDamped, 0, width, 1, 4.5);
+        terrain.material.uniforms.roadWidth.value = map(
+            mouse.xDamped,
+            0,
+            width,
+            1,
+            4.5
+        );
 
         camera.position.y = map(mouse.yDamped, 0, height, 4, 11);
 
@@ -160,7 +180,9 @@ function createLandscape(params) {
     }
 
     function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+        return (
+            start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
+        );
     }
 
     function lerp(start, end, amt) {
@@ -180,7 +202,7 @@ function animateTitles() {
 
     TweenMax.to(overlay, 2, {
         ease: Quad.easeOut,
-        opacity: 0,
+        opacity: 0
     });
 
     TweenMax.set(titleLetters, { opacity: 0 });
@@ -192,7 +214,7 @@ function animateTitles() {
             startAt: { rotationX: -100, z: -1000 },
             opacity: 1,
             rotationX: 0,
-            z: 0,
+            z: 0
         },
         0.1
     );
@@ -203,15 +225,17 @@ function animateTitles() {
         ease: Expo.easeOut,
         startAt: { y: 30 },
         opacity: 1,
-        y: 0,
+        y: 0
     });
 
     const glitch = (el, cycles) => {
-        if (cycles === 0 || cycles > 3) return;
+        if (cycles === 0 || cycles > 3) {
+            return;
+        }
         TweenMax.set(el, {
             x: getRandomNumber(-20, 20),
             y: getRandomNumber(-20, 20),
-            color: ['#f4d339', '#df003f', '#111111'][cycles - 1],
+            color: ['#f4d339', '#df003f', '#111111'][cycles - 1]
         });
         setTimeout(() => {
             TweenMax.set(el, { x: 0, y: 0, color: '#fff' });
@@ -219,10 +243,15 @@ function animateTitles() {
         }, getRandomNumber(20, 100));
     };
 
-    const loop = (startAt) => {
+    const loop = startAt => {
         this.timeout = setTimeout(() => {
-            const titleLettersShuffled = titleLetters.sort((a, b) => 0.5 - Math.random());
-            const lettersSet = titleLettersShuffled.slice(0, getRandomNumber(1, titleLetters.length + 1));
+            const titleLettersShuffled = titleLetters.sort(
+                (a, b) => 0.5 - Math.random()
+            );
+            const lettersSet = titleLettersShuffled.slice(
+                0,
+                getRandomNumber(1, titleLetters.length + 1)
+            );
             for (let i = 0, len = lettersSet.length; i < len - 1; ++i) {
                 glitch(lettersSet[i], 3);
             }
