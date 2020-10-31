@@ -8,6 +8,7 @@ import IndexPage from 'pages/Index';
 // import routes from 'routes';
 import stores from 'stores';
 
+import './theme/base.css';
 import './theme/main.styl';
 
 require('./main');

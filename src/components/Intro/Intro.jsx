@@ -7,7 +7,7 @@ export default function Intro() {
         <div className="intro">
             <div className="intro--banner">
                 <h1>
-                    <small>About web studio</small>
+                    <small>Our team</small>
                     <br />Focus on your Goals
                 </h1>
 

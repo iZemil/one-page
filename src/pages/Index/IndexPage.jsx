@@ -33,7 +33,7 @@ const Menu = ({ className }) => (
 
 function IndexPage() {
     const wallpaper = (
-        <main>
+        <div className="animation">
             <div className="content">
                 <canvas className="landscape" />
 
@@ -42,8 +42,9 @@ function IndexPage() {
             </div>
 
             <div className="overlay" />
-        </main>
+        </div>
     );
+
     return (
         <div className="perspective effect-rotate-left">
             <div id="large-header" className="container">
