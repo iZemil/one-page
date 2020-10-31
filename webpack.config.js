@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // Aliases
 const alias = require('./webpack/alias');
@@ -51,7 +52,14 @@ const config = {
         extensions: ['.js', '.jsx', '.json', '.styl']
     },
 
-    plugins: [clear('build'), extractStyles(), html({ icon: true })]
+    plugins: [
+        clear('build'),
+        extractStyles(),
+        html({ icon: true }),
+        new CopyPlugin([
+            { from: './public/js', to: 'js' },
+          ]),
+        ]
 };
 
 module.exports = (env, argv) => {
