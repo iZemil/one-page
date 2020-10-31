@@ -1,1 +1,10 @@
-*.DS_Store
+.idea
+build/
+coverage/
+node_modules/
+.directory
+.DS_Store
+.DS_Store?
+Thumbs.db
+*.log
+yarn.lock
