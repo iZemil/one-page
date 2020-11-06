@@ -4,16 +4,16 @@ import cn from 'classnames';
 import Header from 'components/Header';
 import Intro from 'components/Intro';
 import Experience from 'components/Experience';
-import MyCode from 'components/MyCode';
-import Skills from 'components/Skills';
+import Workflow from 'components/Workflow';
+import Services from 'components/Services';
 import Contacts from 'components/Contacts';
 
 const MENU = [
     { title: 'Intro', component: <Intro /> },
     { title: 'Experience', component: <Experience /> },
-    { title: 'My code', component: <MyCode /> },
-    { title: 'Skills', component: <Skills /> },
-    { title: 'Contacts', component: <Contacts /> }
+    { title: 'Services', component: <Services /> },
+    { title: 'Workflow', component: <Workflow /> },
+    { title: 'Contact us', component: <Contacts /> },
 ];
 
 const Menu = ({ className }) => (
@@ -22,7 +22,7 @@ const Menu = ({ className }) => (
             <li
                 key={title}
                 className={cn({
-                    'is-active': index === 0
+                    'is-active': index === 0,
                 })}
             >
                 <span>{title}</span>
@@ -63,7 +63,7 @@ function IndexPage() {
                                 <li
                                     key={title}
                                     className={cn('l-section section', {
-                                        'section--is-active': index === 0
+                                        'section--is-active': index === 0,
                                     })}
                                 >
                                     {component}

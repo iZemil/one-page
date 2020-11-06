@@ -1,14 +1,15 @@
 import React from 'react';
 
-import './Intro.styl';
+import './styles.styl';
 
 export default function Intro() {
     return (
         <div className="intro">
-            <div className="intro--banner">
+            <div className="intro__banner">
                 <h1>
-                    <small>Our team</small>
-                    <br />Focus on your Goals
+                    <div className="intro__banner-title">Focus on your Goals</div>
+                    <div className="intro__banner-description">We handle</div>
+                    <div className="intro__banner-description">your digital tasks</div>
                 </h1>
 
                 <button type="button" className="cta">

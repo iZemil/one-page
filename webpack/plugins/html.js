@@ -1,13 +1,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { publicPath } = require('../paths');
 
-module.exports = function(options) {
+module.exports = (options) => {
     const opts = Object.assign(
         {
-            title: 'Zemil - web development',
+            title: 'G4M4, Digital Agency, Web Development',
             filename: 'index.html',
             lang: 'en',
-            icon: false
+            icon: false,
         },
         options
     );
@@ -30,7 +30,7 @@ module.exports = function(options) {
             keepClosingSlash: true,
             minifyJS: true,
             minifyCSS: true,
-            minifyURLs: true
-        }
+            minifyURLs: true,
+        },
     });
 };

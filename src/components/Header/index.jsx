@@ -1,10 +1,11 @@
 import React from 'react';
-import './Header.styl';
+
+import './styles.styl';
 
 export default function Header() {
     return (
         <header className="header">
-            <a className="header--logo" href="https://zemil.ru">
+            <a className="header--logo" href="https://.g4m4.com">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"

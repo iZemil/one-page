@@ -1,14 +1,10 @@
 import React from 'react';
 import Slider from 'react-slick';
-import { EXPERIENCE } from 'utils/constants';
+
 import './Experience.styl';
 
 const SliderArrow = ({ onClick, type }) => (
-    <button
-        type="button"
-        className={`experience__slider-arrow experience__slider-arrow_${type}`}
-        onClick={onClick}
-    >
+    <button type="button" className={`experience__slider-arrow experience__slider-arrow_${type}`} onClick={onClick}>
         <svg
             id="Layer_1"
             version="1.1"
@@ -34,12 +30,53 @@ const settings = {
     slidesToShow: 1,
     slidesToScroll: 1,
     nextArrow: <SliderArrow type="next" />,
-    prevArrow: <SliderArrow type="prev" />
+    prevArrow: <SliderArrow type="prev" />,
 };
+
+const EXPERIENCE = [
+    {
+        title: 'Freelance since 2015',
+        list: [
+            'Web development using Wordpress/Joomla',
+            'Simple works with html/css',
+            'Implemantation of ready-made solutions on PHP',
+        ],
+    },
+    {
+        title: 'Web studio since 2016 as html coder',
+        list: [
+            'Gulp, Pug/HTML, SCSS/CSS, BEM',
+            'Cross-browser sites IE9+',
+            'jQuery and jQuery plugins',
+            '1С/MODX CMS, simple php edits',
+            'Work with managers, designers, main coder',
+        ],
+    },
+    {
+        title: 'Web studio since 2017 as a frontend developer',
+        list: [
+            'Cross-browser sites especially Safari',
+            'React, Redux, Atlassian Kit for React',
+            'Jira client-side plugin development, work with jira api',
+            'Work with managers, designer, senior frontend dev, backend jira devs',
+        ],
+    },
+    {
+        title: 'Startup since 2018 as a frontend developer',
+        list: [
+            'Work with frontend and backend team, product managers',
+            'Task creation',
+            'React, Mobx, mobx state tree, Ant design',
+            'Tests with jest, enzyme',
+            'Code review',
+        ],
+    },
+];
 
 export default function Experience() {
     return (
         <div className="experience">
+            our projects and clients
             <div className="experience__content">
                 <Slider {...settings}>
                     {EXPERIENCE.reverse().map(({ title, list }) => (
