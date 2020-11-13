@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from 'react-slick';
+import Modal from 'react-modal';
+import { Scrollbars } from 'react-custom-scrollbars';
 
-import './Experience.styl';
+import mightyMachines from './images/mighty_machines.png';
+import romad from './images/romad.png';
+import onovo from './images/onovo.png';
+import moximo from './images/moximo.jpg';
+import wine from './images/wine.jpg';
+import './styles.styl';
 
-const SliderArrow = ({ onClick, type }) => (
+export const SliderArrow = ({ onClick, type }) => (
     <button type="button" className={`experience__slider-arrow experience__slider-arrow_${type}`} onClick={onClick}>
         <svg
             id="Layer_1"
@@ -33,67 +40,111 @@ const settings = {
     prevArrow: <SliderArrow type="prev" />,
 };
 
-const EXPERIENCE = [
+const PORTFOLIO_LIST = [
     {
-        title: 'Freelance since 2015',
-        list: [
-            'Web development using Wordpress/Joomla',
-            'Simple works with html/css',
-            'Implemantation of ready-made solutions on PHP',
-        ],
+        title: 'Onovo',
+        description: 'Dendra hotel with urban dynamics are combined with the tranquility of nature. Booking app',
+        image: onovo,
     },
     {
-        title: 'Web studio since 2016 as html coder',
-        list: [
-            'Gulp, Pug/HTML, SCSS/CSS, BEM',
-            'Cross-browser sites IE9+',
-            'jQuery and jQuery plugins',
-            '1С/MODX CMS, simple php edits',
-            'Work with managers, designers, main coder',
-        ],
+        title: 'Romad',
+        description: 'Ico website. Attracting potential investors and partners for the development of the project',
+        image: romad,
+    },
+    // {
+    //     title: 'WW',
+    //     description: 'Wine catalog web application',
+    //     image: wine,
+    // },
+    {
+        title: 'The Mighty Machines',
+        description: 'Online store for the sale of electric motorcycles',
+        image: mightyMachines,
     },
     {
-        title: 'Web studio since 2017 as a frontend developer',
-        list: [
-            'Cross-browser sites especially Safari',
-            'React, Redux, Atlassian Kit for React',
-            'Jira client-side plugin development, work with jira api',
-            'Work with managers, designer, senior frontend dev, backend jira devs',
-        ],
-    },
-    {
-        title: 'Startup since 2018 as a frontend developer',
-        list: [
-            'Work with frontend and backend team, product managers',
-            'Task creation',
-            'React, Mobx, mobx state tree, Ant design',
-            'Tests with jest, enzyme',
-            'Code review',
-        ],
+        title: 'Moximo',
+        description: 'Recruiting agency app',
+        image: moximo,
     },
 ];
 
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        padding: 0,
+        transform: 'translate(-50%, -50%)',
+        minWidth: 320,
+        maxWidth: 800,
+        color: '#000',
+    },
+};
+Modal.setAppElement('#app');
+
 export default function Experience() {
+    const [openedModal, setModal] = useState(null);
+    const openModal = (title) => {
+        document.querySelector('.outer-nav').classList.add('is-vis');
+        setModal(title);
+    };
+    const closeModal = () => {
+        document.querySelector('.outer-nav').classList.remove('is-vis');
+        setModal(null);
+    };
+
+    const thumb = ({ style, ...props }) => {
+        const thumbStyle = {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            boxShadow: '0 0 0px 1px rgba(255, 255, 255, 0.8)',
+            right: 2,
+        };
+        return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
     return (
         <div className="experience">
-            our projects and clients
             <div className="experience__content">
                 <Slider {...settings}>
-                    {EXPERIENCE.reverse().map(({ title, list }) => (
+                    {PORTFOLIO_LIST.map(({ title, description }) => (
                         <div className="experience__slider-item" key={title}>
-                            <h3>{title}</h3>
-                            <ul className="experience__slider-item-list">
-                                {list.map((item, index) => (
-                                    // eslint-disable-next-line react/no-array-index-key
-                                    <li key={index}>
-                                        <span>{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="experience__slider-item-wrapper">
+                                <h3>{title}</h3>
+                                <p>{description}</p>
+
+                                <button type="button" className="experience__button" onClick={() => openModal(title)}>
+                                    See result
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </Slider>
             </div>
+
+            {/* https://www.npmjs.com/package/react-modal */}
+            <Modal
+                isOpen={Boolean(openedModal)}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+                className="dialog"
+                overlayClassName="dialog__overlay"
+            >
+                <Scrollbars
+                    style={{ height: '98vh', width: 600 }}
+                    renderThumbHorizontal={thumb}
+                    renderThumbVertical={thumb}
+                >
+                    <div className="portfolio__wrapper">
+                        <img
+                            alt="sample"
+                            src={openedModal ? PORTFOLIO_LIST.find((it) => it.title === openedModal).image : ''}
+                        />
+                    </div>
+                </Scrollbars>
+            </Modal>
         </div>
     );
 }
