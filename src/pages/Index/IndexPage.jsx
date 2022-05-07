@@ -3,15 +3,15 @@ import cn from 'classnames';
 
 import Header from 'components/Header';
 import Intro from 'components/Intro';
-import Experience from 'components/Experience';
+// import Experience from 'components/Experience';
 // import Workflow from 'components/Workflow';
-import Services from 'components/Services';
+// import Services from 'components/Services';
 import Contacts from 'components/Contacts';
 
 const MENU = [
     { title: 'Intro', component: <Intro /> },
-    { title: 'Services', component: <Services /> },
-    { title: 'Portfolio', component: <Experience /> },
+    // { title: 'Services', component: <Services /> },
+    // { title: 'Portfolio', component: <Experience /> },
     // { title: 'Workflow', component: <Workflow /> },
     { title: 'Contact us', component: <Contacts /> },
 ];

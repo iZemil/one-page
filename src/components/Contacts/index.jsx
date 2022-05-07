@@ -5,24 +5,24 @@ import './styles.styl';
 const CONTACTS = [
     {
         title: 'e-mail',
-        href: 'mailto:gazebo4m4@gmail.com',
-        text: 'gazebo4m4@gmail.com',
+        href: 'mailto:3zemil@gmail.com',
+        text: '3zemil@gmail.com',
     },
-    {
-        title: 'fb',
-        href: 'https://www.facebook.com/viktor.shultz.750',
-        text: 'chief manager',
-    },
+    // {
+    //     title: 'fb',
+    //     href: 'https://www.facebook.com/viktor.shultz.750',
+    //     text: 'chief manager',
+    // },
     // {
     //     title: 'linkedin',
     //     href: 'https://www.linkedin.com/in/emil-zaripov-8028b4170/',
     //     text: 'chief manager',
     // },
-    // {
-    //     title: 'skype',
-    //     href: 'skype:g4m4?add',
-    //     text: 'g4m4',
-    // },
+    {
+        title: 'telegram',
+        href: 'https://t.me/xxxzei',
+        text: '@xxxzei',
+    },
 ];
 
 export default function Contacts() {

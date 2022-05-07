@@ -14,8 +14,7 @@
         "format:css": "stylus-supremacy format \"src/**/*.styl\" --replace --options .stylussupremacy",
         "lint": "eslint src --ext .js,.jsx",
         "predeploy": "npm run build",
-        "deploy": "gh-pages -d build",
-        "express": "pm2 start ./express-server.js --name express-g4m4"
+        "deploy": "gh-pages -d build"
     },
     "lint-staged": {
         "src/**/*.{js,jsx}": [
@@ -35,19 +34,18 @@
     "dependencies": {
         "classnames": "2.2.6",
         "decko": "1.2.0",
-        "express": "^4.17.1",
         "mobx": "5.9.0",
         "mobx-react": "5.4.3",
-        "moment": "^2.24.0",
+        "moment": "2.24.0",
         "prop-types": "15.6.2",
         "react": "16.8",
-        "react-custom-scrollbars": "^4.2.1",
+        "react-custom-scrollbars": "4.2.1",
         "react-dom": "16.8",
-        "react-modal": "^3.11.2",
+        "react-modal": "3.11.2",
         "react-router-dom": "4.3.1",
-        "react-skylight": "^0.5.1",
-        "react-slick": "^0.24.0",
-        "slick-carousel": "^1.8.1"
+        "react-skylight": "0.5.1",
+        "react-slick": "0.24.0",
+        "slick-carousel": "1.8.1"
     },
     "devDependencies": {
         "@babel/core": "7.2.2",
